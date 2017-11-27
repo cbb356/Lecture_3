@@ -70,7 +70,8 @@ public class GeneralActions {
         driver.findElement(categoryNameInput).sendKeys(categoryName);
         ((JavascriptExecutor) driver).executeScript("arguments[0].click()", driver.findElement(categoryFormSubmitBtn));
         wait.until(ExpectedConditions.visibilityOfElementLocated(createSuccess));
-        System.out.println("Category \"" + categoryName + "\" created successfully");
+        if (driver.findElement(createSuccess).getText().contains("Создано"))
+            System.out.println("Category \"" + categoryName + "\" created successfully");
     }
 
     /**
