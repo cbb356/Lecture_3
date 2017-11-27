@@ -1,6 +1,5 @@
 package myprojects.automation.assignment3;
 
-import com.google.common.base.Predicate;
 import myprojects.automation.assignment3.utils.Properties;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -17,7 +16,6 @@ public class GeneralActions {
 
     private WebDriver driver;
     private WebDriverWait wait;
-    private By loadingPage = By.id("ajax_running");
 
     //Login page variables
     private By emailInput = By.id("email");
@@ -25,6 +23,7 @@ public class GeneralActions {
     private By loginButton = By.name("submitLogin");
 
     //Dashboard page variables
+    private By loadingPage = By.xpath("//span[@id='ajax_running' and @style='display: none;']");
     private By catalogueTab = By.id("subtab-AdminCatalog");
     private By categoriesTab = By.id("subtab-AdminCategories");
 
@@ -34,7 +33,7 @@ public class GeneralActions {
     private By categoryFormSubmitBtn = By.id("category_form_submit_btn");
     private By createSuccess = By.xpath("//*[@class='alert alert-success']");
     private By filterByName = By.xpath("//span[contains(text(),'Имя')]/a/i[@class='icon-caret-up']");
-
+    private String categoryNameList = "//tbody/tr/td[@class='pointer' and contains(text(),'%s')]";
 
     public GeneralActions(WebDriver driver) {
         this.driver = driver;
@@ -69,7 +68,7 @@ public class GeneralActions {
         waitForContentLoad();
         driver.findElement(categoryNameInput).sendKeys(categoryName);
         ((JavascriptExecutor) driver).executeScript("arguments[0].click()", driver.findElement(categoryFormSubmitBtn));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(createSuccess));
+        waitForContentLoad();
         if (driver.findElement(createSuccess).getText().contains("Создано"))
             System.out.println("Category \"" + categoryName + "\" created successfully");
     }
@@ -80,8 +79,8 @@ public class GeneralActions {
      */
     public void checkCategory(String categoryName) {
         driver.findElement(filterByName).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated
-                (By.xpath("//tr/td[@class='pointer' and contains(text(),'" + categoryName + "')]")));
+        By selector = By.xpath(String.format(categoryNameList, categoryName));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(selector));
         System.out.println("Category \"" + categoryName + "\" is presented in Categories List");
     }
 
@@ -90,16 +89,7 @@ public class GeneralActions {
      * Waits until page loader disappears from the page
      */
     public void waitForContentLoad() {
-        Predicate<WebDriver> driverPredicate = new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver driver) {
-                return ((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete");
-            }
-        };
-        wait.until(driverPredicate);
-
-        wait.until(ExpectedConditions.visibilityOfElementLocated(loadingPage));
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(loadingPage));
+        wait.until(ExpectedConditions.presenceOfElementLocated(loadingPage));
     }
 
 }
