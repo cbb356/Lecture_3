@@ -8,6 +8,8 @@ import org.openqa.selenium.remote.BrowserType;
 public class Properties {
     private static final String DEFAULT_BASE_URL = "http://prestashop-automation.qatestlab.com.ua/";
     private static final String DEFAULT_BASE_ADMIN_URL = "http://prestashop-automation.qatestlab.com.ua/admin147ajyvk0/";
+    private static final String DEFAULT_LOGIN = "webinar.test@gmail.com";
+    private static final String DEFAULT_PASSWORD = "Xcg7299bnSmMuRLp9ITw";
     private static final String DEFAULT_BROWSER = BrowserType.CHROME;
 
     /**
@@ -28,6 +30,22 @@ public class Properties {
 
     /**
      *
+     * @return Login
+     */
+    public static String getBaseLogin() {
+        return System.getProperty(EnvironmentVariables.BASE_LOGIN.toString(), DEFAULT_LOGIN);
+    }
+
+    /**
+     *
+     * @return Password
+     * */
+    public static String getBasePassword() {
+        return System.getProperty(EnvironmentVariables.BASE_PASSWORD.toString(), DEFAULT_PASSWORD);
+    }
+
+    /**
+     *
      * @return The name of the browser that need to be used for execution.
      */
     public static String getBrowser() {
@@ -42,6 +60,8 @@ public class Properties {
 enum EnvironmentVariables {
     BASE_URL("env.url"),
     BASE_ADMIN_URL("env.admin.url"),
+    BASE_LOGIN("login"),
+    BASE_PASSWORD("password"),
     BROWSER("browser");
 
     private String value;
